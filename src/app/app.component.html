@@ -27,7 +27,7 @@
             <span class="text-white">rows from </span>
             <select #selectElemTable (change)="setTable(selectElemTable.value)">
               <option *ngFor="let item of tables">
-                {{item}}
+                {{item.name}}
               </option>
             </select>
             <button (click)="refreshTable()" class="btn btn-success btn-sm">

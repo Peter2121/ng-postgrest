@@ -67,8 +67,8 @@ export class PostgrestServiceService {
           if (definitions[sName]["properties"][prop]["description"] && definitions[sName]["properties"][prop]["description"].indexOf("Primary Key")) {
             pkey = prop;
           }
-          results.push({ name: name, pkey: pkey });
         }
+        results.push({ name: name, pkey: pkey });
       }
     }
 
