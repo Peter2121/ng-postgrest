@@ -25,8 +25,8 @@
           <li class="nav-item">
             <input type="number" name="sizeOfSelect" id="sizeOfSelect" [(ngModel)]="limit" />&nbsp;
             <span class="text-white">rows from </span>
-            <select #selectElemTable (change)="setTable(selectElemTable.value)">
-              <option *ngFor="let item of tables">
+            <select [ngModel]="selectElemTable" (ngModelChange)="setTable($event)">
+              <option *ngFor="let item of tables" [ngValue]="item" >
                 {{item.name}}
               </option>
             </select>
