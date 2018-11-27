@@ -17,37 +17,37 @@ export class AppComponent implements OnInit {
   title = 'app';
 
   public databaseUrls: {url: string, auth: string}[] = [];
-  public currentUrl: {url: string, auth: string} = {url: "", auth: ""};
+  public currentUrl: {url: string, auth: string} = {url: '', auth: ''};
 
-  public newUrl: {url: string, auth: string} = {url: "", auth: ""};
+  public newUrl: {url: string, auth: string} = {url: '', auth: ''};
 
   public tables: { name: string; pkey: string }[] = [];
 
-  public table: { name: string; pkey: string } = {name: "", pkey: ""};
-  public limit: number = 100;
-  public offset: number = 0;
+  public table: { name: string; pkey: string } = {name: '', pkey: ''};
+  public limit = 100;
+  public offset = 0;
 
 
-  public busy: boolean = false;
-  public busyMessage: string = "";
+  public busy = false;
+  public busyMessage = '';
 
   public tableColumns: string[] = [];
   public tableRows: any[] = [];
   public tableRowToEdit: any;
   public tableRowToEditOriginal: any;
-  public editing: boolean = false;
+  public editing = false;
 
-  public MESSAGE_LOADING_TABLES: string = "Loading TABLES";
-  public MESSAGE_LOADING_ROWS: string = "Loading ROWS";
+  public MESSAGE_LOADING_TABLES = 'Loading TABLES';
+  public MESSAGE_LOADING_ROWS = 'Loading ROWS';
 
-  public inserting: boolean = false;
+  public inserting = false;
 
   constructor(
     private _postgrestService: PostgrestServiceService
   ) { }
 
   ngOnInit() {
-    let result: string = localStorage.getItem("databaseUrls");
+    const result: string = localStorage.getItem('databaseUrls');
     if (result) {
       this.databaseUrls = JSON.parse(result)
       this.currentUrl = this.databaseUrls[0]
@@ -56,10 +56,10 @@ export class AppComponent implements OnInit {
   }
 
   public getRange(): string {
-    if (this.offset == 0) {
-      return "Rows " + (this.offset + 1) + " to " + (this.offset + this.tableRows.length);
+    if (this.offset === 0) {
+      return 'Rows ' + (this.offset + 1) + ' to ' + (this.offset + this.tableRows.length);
     }
-    return "Rows " + this.offset + " to " + (this.offset + this.tableRows.length);
+    return 'Rows ' + this.offset + ' to ' + (this.offset + this.tableRows.length);
   }
 
   public setUrl(urlIn: {url: string, auth: string}) {
@@ -69,18 +69,19 @@ export class AppComponent implements OnInit {
 
   public newDatabase(): void {
 
-    var t = this;
+    const t = this;
 
     swal({
       title: 'Please enter a grest url, and JWT token',
-      html: '<input id="url-input" placeholder=" postgrest url" class="swal2-input">' + '<input id="auth-input" placeholder="JWT token" class="swal2-input">',
+      html: `<input id="url-input" placeholder=" postgrest url" class="swal2-input">
+            <input id="auth-input" placeholder="JWT token" class="swal2-input">`,
       showCancelButton: true,
       confirmButtonText: 'Save',
       showLoaderOnConfirm: true,
       preConfirm: function () {
         return new Promise(function (resolve, reject) {
-            if(!$('#url-input').val()){
-              reject("Nop!")
+            if (!$('#url-input').val()) {
+              reject('Nop!')
             } else {
               resolve({
                 url: $('#url-input').val(),
@@ -91,7 +92,7 @@ export class AppComponent implements OnInit {
       },
       allowOutsideClick: false
     }).then(function (db) {
-      db.url = db.url.replace(/\/$/, ""); // remove trailing slash
+      db.url = db.url.replace(/\/$/, ''); // remove trailing slash
       t.addUrl({url: db.url, auth: db.auth})
     })
 
@@ -101,7 +102,7 @@ export class AppComponent implements OnInit {
   public addUrl(url: {url: string, auth: string}): void {
     // var url = prompt("Please enter your grest url:", "http://grest.something.com");
     if (url) {
-      if (this.databaseUrls.length == 0) {
+      if (this.databaseUrls.length === 0) {
         this.currentUrl = url;
       }
       this.databaseUrls.push(url)
@@ -112,7 +113,7 @@ export class AppComponent implements OnInit {
   }
 
   public newUrlButton(): void {
-    if (this.databaseUrls.length == 0) {
+    if (this.databaseUrls.length === 0) {
       this.currentUrl = this.newUrl;
     }
     this.databaseUrls.push(this.newUrl)
@@ -122,11 +123,11 @@ export class AppComponent implements OnInit {
 
 
   public persistUrls(): void {
-    localStorage.setItem("databaseUrls", JSON.stringify(this.databaseUrls))
+    localStorage.setItem('databaseUrls', JSON.stringify(this.databaseUrls))
   }
 
   public clearDB(): void {
-    localStorage.removeItem("databaseUrls");
+    localStorage.removeItem('databaseUrls');
     this.databaseUrls = [];
     this.tableRows = [];
     this.tableColumns = [];
@@ -143,7 +144,7 @@ export class AppComponent implements OnInit {
   public refreshListOfTables(): void {
     this.busy = true;
     this.busyMessage = this.MESSAGE_LOADING_TABLES
-    let theUrl: {url: string, auth: string} = this.currentUrl;
+    const theUrl: {url: string, auth: string} = this.currentUrl;
     this._postgrestService.fetchRows(theUrl, theUrl.url)
       .then(results => this.setTables(results));
   }
@@ -162,14 +163,14 @@ export class AppComponent implements OnInit {
     this.busyMessage = this.MESSAGE_LOADING_ROWS
     this.offset = 0
     this.table = table;
-    let theUrl = this.currentUrl.url + table.name;
+    const theUrl = this.currentUrl.url + table.name;
     this.loadTableRows(theUrl, 0, this.limit);
 
   }
 
   public loadTableRows(url: string, startNum: number, rows: number) {
-    if (rows != 0) {
-      url = url + "?limit=" + rows + "&offset=" + startNum
+    if (rows !== 0) {
+      url = url + '?limit=' + rows + '&offset=' + startNum
     }
     this._postgrestService.getRows(this.currentUrl, url)
       .then(res => this.showRows(res))
@@ -195,23 +196,23 @@ export class AppComponent implements OnInit {
 
     this.tableColumns = [];
 
-    let row: any = blob[0];
-    for (var key in row) {
+    const row: any = blob[0];
+    for (const key in row) {
       if (row.hasOwnProperty(key)) {
         this.tableColumns.push(key);
       }
     }
 
     let count: number = this.offset;
-    if (count == 0) {
+    if (count === 0) {
       count = 1;
     }
     this.tableRows = [];
-    for (let tableRow of blob) {
-      var thisRow: any = {
+    for (const tableRow of blob) {
+      const thisRow: any = {
 
       };
-      for (var key in row) {
+      for (const key in row) {
         if (tableRow.hasOwnProperty(key)) {
           Reflect.set(thisRow, key, tableRow[key]);
         }
@@ -220,9 +221,9 @@ export class AppComponent implements OnInit {
       this.tableRows.push(thisRow);
     }
 
-    var component = this;
+    const component = this;
     setTimeout(function () {
-      component.setBusy(false, "")
+      component.setBusy(false, '')
     }, 800);
 
     // this.busyMessage = ""
@@ -246,18 +247,18 @@ export class AppComponent implements OnInit {
 
   public getTableRowToEdit(col: string): string {
     if (!col) {
-      console.log("Not col!")
-      return "";
+      console.log('Not col!')
+      return '';
     }
     if (!this.tableRowToEdit) {
-      console.log("Not tableRowToEdit!")
-      return "";
+      console.log('Not tableRowToEdit!')
+      return '';
     }
 
-    var test = this.tableRowToEdit[col];
+    const test = this.tableRowToEdit[col];
     if (!test) {
-      console.log("Not test!")
-      return "";
+      console.log('Not test!')
+      return '';
     }
 
     return test;
@@ -266,7 +267,7 @@ export class AppComponent implements OnInit {
   }
 
   public saveEdit(): void {
-    this._postgrestService.doPatch(this.currentUrl, this.currentUrl.url + this.table.name + "?"+ this.table.pkey +"=eq." + this.tableRowToEdit[this.table.pkey], this.tableRowToEdit)
+    this._postgrestService.doPatch(this.currentUrl, this.currentUrl.url + this.table.name + '?' + this.table.pkey + '=eq.' + this.tableRowToEdit[this.table.pkey], this.tableRowToEdit)
       .catch(error => console.log(error))
       .then(res => this.cancelEdit())
 
@@ -278,10 +279,10 @@ export class AppComponent implements OnInit {
   }
 
   public deleteRowButton(row: any): void {
-    var t = this;
+    const t = this;
     swal({
       title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      text: 'You won\'t be able to revert this!',
       type: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -290,7 +291,7 @@ export class AppComponent implements OnInit {
     }).then(function () {
       t.deleteRow(row)
     }).catch(function () {
-      console.log("Cancelled")
+      console.log('Cancelled')
     })
 
 
@@ -298,8 +299,8 @@ export class AppComponent implements OnInit {
   }
 
   public deleteRow(row: any) {
-    var t = this;
-    this._postgrestService.doDelete(this.currentUrl, this.currentUrl.url + this.table.name + "?"+ this.table.pkey +"=eq." + row[this.table.pkey])
+    const t = this;
+    this._postgrestService.doDelete(this.currentUrl, this.currentUrl.url + this.table.name + '?' + this.table.pkey + '=eq.' + row[this.table.pkey])
       .catch(error => console.log(error))
       .then(v => t.refreshTable()
       )
