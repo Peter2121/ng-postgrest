@@ -3,8 +3,8 @@
     <div class="container">
       <div class="collapse navbar-collapse" id="navbarResponsive">
 
-        <select #selectElem (change)="setUrl(selectElem.value)">
-          <option *ngFor="let url of databaseUrls">
+        <select [ngModel]="selectElemDB" (ngModelChange)="setUrl($event)">
+          <option *ngFor="let url of databaseUrls" [ngValue]="url">
             {{url.url}}
           </option>
         </select>
@@ -13,8 +13,12 @@
           <span class="glyphicon glyphicon-plus"></span> Add
         </button>
         &nbsp;
-        <button (click)="clearDB()" class="btn btn-danger btn-sm">
-          <span class="glyphicon glyphicon-trash"></span> Clear all
+        <button (click)="deleteDB()" class="btn btn-danger btn-sm">
+          <span class="glyphicon glyphicon-trash"></span> Delete
+        </button>
+        &nbsp;
+        <button (click)="deleteAllDB()" class="btn btn-danger btn-sm">
+          <span class="glyphicon glyphicon-trash"></span> Delete all
         </button>
         &nbsp;
         <button (click)="refreshListOfTables()" class="btn btn-success btn-sm">

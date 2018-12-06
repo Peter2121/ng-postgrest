@@ -126,7 +126,28 @@ export class AppComponent implements OnInit {
     localStorage.setItem('databaseUrls', JSON.stringify(this.databaseUrls))
   }
 
-  public clearDB(): void {
+  public deleteDB(): void {
+    const newDB = this.databaseUrls.filter(value =>
+        value.url !== this.currentUrl.url
+    );
+    this.databaseUrls = newDB;
+    if (newDB.length > 0){
+      this.currentUrl = newDB[0];
+    } else {
+      this.currentUrl = {url: '', auth: ''};
+    }
+    this.persistUrls();
+    swal({
+      title: 'Success',
+      text: 'The database has been cleared',
+      timer: 800,
+      onOpen: function () {
+        swal.showLoading()
+      }
+    })
+  }
+
+  public deleteAllDB(): void {
     localStorage.removeItem('databaseUrls');
     this.databaseUrls = [];
     this.tableRows = [];
