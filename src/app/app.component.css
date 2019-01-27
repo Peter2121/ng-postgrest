@@ -1,3 +1,7 @@
 #sizeOfSelect {
     width: 75px;
 }
+
+.table tr:first-child th {
+    cursor: pointer;
+}
