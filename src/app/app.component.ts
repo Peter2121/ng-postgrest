@@ -1,33 +1,33 @@
-import { Component } from "@angular/core";
-import { OnInit } from "@angular/core";
-import { PostgrestServiceService } from "./services/postgrest-service.service";
-import { Properties } from "./static/Properties";
-import * as $ from "jquery";
+import { Component } from '@angular/core';
+import { OnInit } from '@angular/core';
+import { PostgrestServiceService } from './services/postgrest-service.service';
+import { Properties } from './static/Properties';
+import * as $ from 'jquery';
 
 declare var swal: any;
 
 @Component({
-  selector: "app-root",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.css"]
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = "app";
+  title = 'app';
 
   public databaseUrls: { url: string; auth: string }[] = [];
-  public currentUrl: { url: string; auth: string } = { url: "", auth: "" };
+  public currentUrl: { url: string; auth: string } = { url: '', auth: '' };
 
-  public newUrl: { url: string; auth: string } = { url: "", auth: "" };
+  public newUrl: { url: string; auth: string } = { url: '', auth: '' };
 
   public tables: { name: string; pkey: string }[] = [];
 
-  public table: { name: string; pkey: string } = { name: "", pkey: "" };
+  public table: { name: string; pkey: string } = { name: '', pkey: '' };
   public limit = 100;
   public offset = 0;
-  public order = "";
+  public order = '';
 
   public busy = false;
-  public busyMessage = "";
+  public busyMessage = '';
 
   public tableColumns: string[] = [];
   public tableRows: any[] = [];
@@ -35,15 +35,15 @@ export class AppComponent implements OnInit {
   public tableRowToEditOriginal: any;
   public editing = false;
 
-  public MESSAGE_LOADING_TABLES = "Loading TABLES";
-  public MESSAGE_LOADING_ROWS = "Loading ROWS";
+  public MESSAGE_LOADING_TABLES = 'Loading TABLES';
+  public MESSAGE_LOADING_ROWS = 'Loading ROWS';
 
   public inserting = false;
 
   constructor(private _postgrestService: PostgrestServiceService) {}
 
   ngOnInit() {
-    const result: string = localStorage.getItem("databaseUrls");
+    const result: string = localStorage.getItem('databaseUrls');
     if (result) {
       this.databaseUrls = JSON.parse(result);
       this.currentUrl = this.databaseUrls[0];
@@ -54,14 +54,14 @@ export class AppComponent implements OnInit {
   public getRange(): string {
     if (this.offset === 0) {
       return (
-        "Rows " +
+        'Rows ' +
         (this.offset + 1) +
-        " to " +
+        ' to ' +
         (this.offset + this.tableRows.length)
       );
     }
     return (
-      "Rows " + this.offset + " to " + (this.offset + this.tableRows.length)
+      'Rows ' + this.offset + ' to ' + (this.offset + this.tableRows.length)
     );
   }
 
@@ -74,27 +74,27 @@ export class AppComponent implements OnInit {
     const t = this;
 
     swal({
-      title: "Please enter a grest url, and JWT token",
+      title: 'Please enter a grest url, and JWT token',
       html: `<input id="url-input" placeholder=" postgrest url" class="swal2-input">
             <input id="auth-input" placeholder="JWT token" class="swal2-input">`,
       showCancelButton: true,
-      confirmButtonText: "Save",
+      confirmButtonText: 'Save',
       showLoaderOnConfirm: true,
       preConfirm: function() {
         return new Promise(function(resolve, reject) {
-          if (!$("#url-input").val()) {
-            reject("Nop!");
+          if (!$('#url-input').val()) {
+            reject('Nop!');
           } else {
             resolve({
-              url: $("#url-input").val(),
-              auth: $("#auth-input").val()
+              url: $('#url-input').val(),
+              auth: $('#auth-input').val()
             });
           }
         });
       },
       allowOutsideClick: false
     }).then(function(db) {
-      db.url = db.url.replace(/\/$/, ""); // remove trailing slash
+      db.url = db.url.replace(/\/$/, ''); // remove trailing slash
       t.addUrl({ url: db.url, auth: db.auth });
     });
   }
@@ -121,7 +121,7 @@ export class AppComponent implements OnInit {
   }
 
   public persistUrls(): void {
-    localStorage.setItem("databaseUrls", JSON.stringify(this.databaseUrls));
+    localStorage.setItem('databaseUrls', JSON.stringify(this.databaseUrls));
   }
 
   public deleteDB(): void {
@@ -132,12 +132,12 @@ export class AppComponent implements OnInit {
     if (newDB.length > 0) {
       this.currentUrl = newDB[0];
     } else {
-      this.currentUrl = { url: "", auth: "" };
+      this.currentUrl = { url: '', auth: '' };
     }
     this.persistUrls();
     swal({
-      title: "Success",
-      text: "The database has been cleared",
+      title: 'Success',
+      text: 'The database has been cleared',
       timer: 800,
       onOpen: function() {
         swal.showLoading();
@@ -146,13 +146,13 @@ export class AppComponent implements OnInit {
   }
 
   public deleteAllDB(): void {
-    localStorage.removeItem("databaseUrls");
+    localStorage.removeItem('databaseUrls');
     this.databaseUrls = [];
     this.tableRows = [];
     this.tableColumns = [];
     swal({
-      title: "Success",
-      text: "The database has been cleared",
+      title: 'Success',
+      text: 'The database has been cleared',
       timer: 800,
       onOpen: function() {
         swal.showLoading();
@@ -194,10 +194,10 @@ export class AppComponent implements OnInit {
     const rows = this.limit;
     const order = this.order;
     if (rows !== 0) {
-      url = url + "?limit=" + rows + "&offset=" + startNum;
+      url = url + '?limit=' + rows + '&offset=' + startNum;
     }
     if (order) {
-      url = url + "&order=" + order;
+      url = url + '&order=' + order;
     }
     this._postgrestService
       .getRows(this.currentUrl, url)
@@ -221,9 +221,9 @@ export class AppComponent implements OnInit {
   }
 
   public setOrder(col: string): void {
-    let direction = ".asc";
-    if (this.order.indexOf(col) > -1 && this.order.indexOf(".asc") > -1) {
-      direction = ".desc";
+    let direction = '.asc';
+    if (this.order.indexOf(col) > -1 && this.order.indexOf('.asc') > -1) {
+      direction = '.desc';
     }
     this.setBusy(true, this.MESSAGE_LOADING_ROWS);
     this.order = col + direction;
@@ -258,7 +258,7 @@ export class AppComponent implements OnInit {
 
     const component = this;
     setTimeout(function() {
-      component.setBusy(false, "");
+      component.setBusy(false, '');
     }, 800);
 
     // this.busyMessage = ""
@@ -278,18 +278,18 @@ export class AppComponent implements OnInit {
 
   public getTableRowToEdit(col: string): string {
     if (!col) {
-      console.log("Not col!");
-      return "";
+      console.log('Not col!');
+      return '';
     }
     if (!this.tableRowToEdit) {
-      console.log("Not tableRowToEdit!");
-      return "";
+      console.log('Not tableRowToEdit!');
+      return '';
     }
 
     const test = this.tableRowToEdit[col];
     if (!test) {
-      console.log("Not test!");
-      return "";
+      console.log('Not test!');
+      return '';
     }
 
     return test;
@@ -301,9 +301,9 @@ export class AppComponent implements OnInit {
         this.currentUrl,
         this.currentUrl.url +
           this.table.name +
-          "?" +
+          '?' +
           this.table.pkey +
-          "=eq." +
+          '=eq.' +
           this.tableRowToEdit[this.table.pkey],
         this.tableRowToEdit
       )
@@ -318,19 +318,19 @@ export class AppComponent implements OnInit {
   public deleteRowButton(row: any): void {
     const t = this;
     swal({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      type: "warning",
+      title: 'Are you sure?',
+      text: 'You won\'t be able to revert this!',
+      type: 'warning',
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
     })
       .then(function() {
         t.deleteRow(row);
       })
       .catch(function() {
-        console.log("Cancelled");
+        console.log('Cancelled');
       });
   }
 
@@ -341,9 +341,9 @@ export class AppComponent implements OnInit {
         this.currentUrl,
         this.currentUrl.url +
           this.table.name +
-          "?" +
+          '?' +
           this.table.pkey +
-          "=eq." +
+          '=eq.' +
           row[this.table.pkey]
       )
       .catch(error => console.log(error))
