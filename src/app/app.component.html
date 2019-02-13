@@ -116,11 +116,11 @@
           {{ col }}
           <span
             *ngIf="order.indexOf(col) > -1 && order.indexOf('asc') > -1"
-            class="glyphicon glyphicon-arrow-up"
+            class="glyphicon glyphicon-arrow-up" aria-hidden="true"
           ></span>
           <span
             *ngIf="order.indexOf(col) > -1 && order.indexOf('desc') > -1"
-            class="glyphicon glyphicon-arrow-down"
+            class="glyphicon glyphicon-arrow-down" aria-hidden="true"
           ></span>
         </th>
         <th style="width:100px;">
