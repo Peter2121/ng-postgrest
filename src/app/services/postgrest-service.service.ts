@@ -1,94 +1,90 @@
 import { Injectable } from '@angular/core';
-
-import { RequestOptions, Headers, Http, Response } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
 
 @Injectable()
 export class PostgrestServiceService {
-  constructor(private http: Http) {}
+  constructor(private http: HttpClient) {}
 
-  public fetchRows(db: {url: string, auth: string}, url: string): Promise<{ name: string; pkey: string }[]> {
-    const headers = new Headers({
-      Accepts: 'application/json',
-      Authorization: 'Bearer ' + db.auth
-    });
-    const options = new RequestOptions({ headers: headers });
+  public fetchRows(db: {url: string, auth: string}, url: string): Observable<{ name: string; pkey: string }[]> {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-type': 'application/json',
+        Authorization: 'Bearer ' + db.auth
+      })
+    };
     return this.http
-      .get(url, options)
-      .toPromise()
-      .then(res => this.returnRows(res))
-      .catch(this.handleError);
+      .get<any>(url, options)
+        .pipe(
+            map(response => {
+              const paths = response.paths;
+              const definitions = response.definitions;
+              const results: { name: string; pkey: string }[] = [];
+              for (const item in paths) {
+                if (item != '/' && item.indexOf('/rpc/') != 0) {
+                  const name = item;
+                  let pkey: string;
+                  const sName = name.replace('/', '')
+                  for (const prop in definitions[sName]['properties']) {
+                    if (definitions[sName]['properties'][prop]['description'] && definitions[sName]['properties'][prop]['description'].indexOf('Primary Key')) {
+                      pkey = prop;
+                    }
+                  }
+                  const table: { name: string; pkey: string } = { name: name, pkey: pkey };
+                  results.push(table);
+                }
+              }
+              return results;
+            }),
+            catchError(this.handleError)
+        )
   }
 
-  public doPatch(db: {url: string, auth: string}, url: string, jsonPayload: string): Promise<string[]> {
-    const headers = new Headers({
-      'Content-type': 'application/json',
-      Authorization: 'Bearer ' + db.auth
-    });
-    const options = new RequestOptions({ headers: headers });
+  public doPatch(db: {url: string, auth: string}, url: string, jsonPayload: string): Observable<string[]> {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-type': 'application/json',
+        Authorization: 'Bearer ' + db.auth
+      })
+    };
     return this.http
       .patch(url, jsonPayload, options)
-      .toPromise()
-      .catch(this.handleError);
+        .pipe(
+            catchError(this.handleError)
+        )
   }
 
-  public doDelete(db: {url: string, auth: string}, url: string): Promise<string[]> {
-    const headers = new Headers({
-      'Content-type': 'application/json',
-      Authorization: 'Bearer ' + db.auth
-    });
-    const options = new RequestOptions({ headers: headers });
+  public doDelete(db: {url: string, auth: string}, url: string): Observable<string[]> {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-type': 'application/json',
+        Authorization: 'Bearer ' + db.auth
+      })
+    };
     return this.http
       .delete(url, options)
-      .toPromise()
-      .catch(this.handleError);
+        .pipe(
+            catchError(this.handleError)
+        )
   }
 
   private handleError(error: any): Promise<any> {
     return Promise.reject(error.message || error);
   }
 
-  private returnRows(
-    response: Response
-  ): Promise<{ name: string; pkey: string }[]> {
-    const t = response.json();
-    const paths = t.paths;
-    const definitions = t.definitions;
-
-    const results: { name: string; pkey: string }[] = [];
-    for (const item in paths) {
-      if (item != '/' && item.indexOf('/rpc/') != 0) {
-        const name = item;
-        let pkey: string;
-        const sName = name.replace('/', '')
-        for (const prop in definitions[sName]['properties']) {
-          if (definitions[sName]['properties'][prop]['description'] && definitions[sName]['properties'][prop]['description'].indexOf('Primary Key')) {
-            pkey = prop;
-          }
-        }
-        results.push({ name: name, pkey: pkey });
-      }
-    }
-
-    return Promise.resolve(results);
-  }
-
-  public getRows(db: {url: string, auth: string}, url: string): Promise<any> {
-    const headers = new Headers({
-      Accepts: 'application/json',
-      Authorization: 'Bearer ' + db.auth
-    });
-    const options = new RequestOptions({ headers: headers });
+  public getRows(db: {url: string, auth: string}, url: string): Observable<any> {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-type': 'application/json',
+        Authorization: 'Bearer ' + db.auth
+      })
+    };
     return this.http
-      .get(url, options)
-      .toPromise()
-      .then(res => this.returnObjects(res))
-      .catch(this.handleError);
-  }
-
-  private returnObjects(response: Response): Promise<any> {
-    const t = response.json();
-    return Promise.resolve(t);
+      .get<any>(url, options)
+      .pipe(
+        map(res => res),
+        catchError(this.handleError)
+      )
   }
 }

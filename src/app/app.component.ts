@@ -166,7 +166,7 @@ export class AppComponent implements OnInit {
     const theUrl: { url: string; auth: string } = this.currentUrl;
     this._postgrestService
       .fetchRows(theUrl, theUrl.url)
-      .then(results => this.setTables(results));
+      .subscribe(results => this.setTables(results))
   }
 
   public setTables(tables: { name: string; pkey: string }[]) {
@@ -201,7 +201,7 @@ export class AppComponent implements OnInit {
     }
     this._postgrestService
       .getRows(this.currentUrl, url)
-      .then(res => this.showRows(res));
+      .subscribe(res => this.showRows(res))
   }
 
   public next(): void {
@@ -306,9 +306,7 @@ export class AppComponent implements OnInit {
           '=eq.' +
           this.tableRowToEdit[this.table.pkey],
         this.tableRowToEdit
-      )
-      .catch(error => console.log(error))
-      .then(res => this.cancelEdit());
+      ).subscribe()
   }
 
   public cancelEdit(): void {
@@ -345,8 +343,6 @@ export class AppComponent implements OnInit {
           this.table.pkey +
           '=eq.' +
           row[this.table.pkey]
-      )
-      .catch(error => console.log(error))
-      .then(v => t.refreshTable());
+      ).subscribe()
   }
 }
