@@ -1,10 +1,14 @@
 import { TestBed, async } from '@angular/core/testing';
-
+import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
+import {PostgrestServiceService} from './services/postgrest-service.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [FormsModule, HttpClientTestingModule],
+      providers: [PostgrestServiceService],
       declarations: [
         AppComponent
       ],
@@ -23,10 +27,10 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('app');
   }));
 
-  it('should render title in a h1 tag', async(() => {
+  it('should render #ng-postgrest div', async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to app!!');
+    expect(compiled.querySelector('#ng-postgrest').textContent).toBeTruthy();
   }));
 });
