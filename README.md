@@ -39,19 +39,11 @@ Run `ng build --prod --aot=false` .
 
 
 ### Planned
-
-  - Complex queries (Support for AND, OR)
-  - Security headers
-  - Persisting defaults
-  - Saving & loading settings (Google drive)
-  - Host latest release on Github pages
-  - Docker image (Alpine, Nginx)
-  - Heroku button
-  - Clear exception communication
+please open an issue if you need a feature
 
 ### Stack
 
-  - **Angular 4**
+  - **Angular 8**
   - **Bootstrap 4**
   - **Sweet Alert 2**
   - **Karma**
