@@ -107,6 +107,8 @@ export class AppComponent implements OnInit {
       }
       this.databaseUrls.push(url);
       this.persistUrls();
+      // select the ne url
+      this.currentUrl = this.databaseUrls[this.databaseUrls.length - 1];
       this.refreshListOfTables();
     }
   }
