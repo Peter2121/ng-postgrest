@@ -2,7 +2,7 @@
   <div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
     <div class="container">
       <div class="collapse navbar-collapse" id="navbarResponsive">
-        <select [ngModel]="selectElemDB" (ngModelChange)="setUrl($event)">
+        <select  [(ngModel)]="currentUrl" (ngModelChange)="setUrl($event)">
           <option *ngFor="let url of databaseUrls" [ngValue]="url">
             {{ url.url }}
           </option>
@@ -37,7 +37,7 @@
               [(ngModel)]="limit"
             />&nbsp; <span class="text-white">rows from </span>
             <select
-              [ngModel]="selectElemTable"
+              [(ngModel)]="table"
               (ngModelChange)="setTable($event)"
             >
               <option *ngFor="let item of tables" [ngValue]="item">
