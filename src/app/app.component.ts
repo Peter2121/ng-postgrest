@@ -39,6 +39,7 @@ export class AppComponent implements OnInit {
   public MESSAGE_LOADING_ROWS = 'Loading ROWS';
 
   public inserting = false;
+  public tableRowToInsert: any;
 
   constructor(private _postgrestService: PostgrestServiceService) {}
 
@@ -346,5 +347,34 @@ export class AppComponent implements OnInit {
           '=eq.' +
           row[this.table.pkey]
       ).subscribe()
+  }
+
+  public insertRow() {
+    this.inserting = true;
+    this.tableRowToInsert = {};
+    this.tableColumns.map(k => {
+      this.tableRowToInsert[k] = '';
+    })
+  }
+
+  public cancelInsert() {
+    this.inserting = false;
+  }
+
+  public saveInsert() {
+    this.inserting = false;
+    this.busy = true;
+    this._postgrestService.doInsert(
+      this.currentUrl,
+      `${this.currentUrl.url}${this.table.name}`,
+      this.tableRowToInsert
+    ).subscribe(
+      data => {
+        this.busy = false;
+        this.inserting = false;
+        this.refreshTable();
+      },
+      error => { this.busy = false; this.inserting = false }
+    );
   }
 }

@@ -69,8 +69,29 @@ export class PostgrestServiceService {
         )
   }
 
+  public doInsert(db: {url: string, auth: string}, url: string, tableRowToInsert: any): Observable<string[]> {
+    const jsonPayload = {};
+    // remove emptyy fields
+    Object.keys(tableRowToInsert).map(k => {
+      if (tableRowToInsert[k] !== '') {
+        jsonPayload[k] = tableRowToInsert[k];
+      }
+    })
+    const options = {
+      headers: new HttpHeaders({
+        'Content-type': 'application/json',
+        Authorization: 'Bearer ' + db.auth
+      })
+    };
+    return this.http
+      .post(url, JSON.stringify(jsonPayload), options)
+        .pipe(
+            catchError(this.handleError)
+        )
+  }
+
   private handleError(error: any): Promise<any> {
-    return Promise.reject(error.message || error);
+    return Promise.reject(error.error || error.message || error);
   }
 
   public getRows(db: {url: string, auth: string}, url: string): Observable<any> {

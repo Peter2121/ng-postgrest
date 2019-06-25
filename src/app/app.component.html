@@ -44,8 +44,13 @@
                 {{ item.name }}
               </option>
             </select>
+            &nbsp;
             <button (click)="refreshTable()" class="btn btn-success btn-sm">
               <span class="glyphicon glyphicon-refresh"></span> Refresh
+            </button>
+            &nbsp;
+            <button (click)="insertRow()" class="btn btn-success btn-sm">
+              <span class="glyphicon glyphicon-plus"></span> Insert row
             </button>
           </li>
         </ul>
@@ -105,7 +110,7 @@
     </div>
   </div>
 
-  <div id="databaseTable" *ngIf="!editing && !busy" style="margin:15px;">
+  <div id="databaseTable" *ngIf="!inserting && !editing && !busy" style="margin:15px;">
     <table class="table table-striped table-hover">
       <tr>
         <th>#</th>
@@ -196,7 +201,7 @@
       <div *ngIf="inserting" class="col-md-6" id="insertForm">
         <form>
           <fieldset>
-            <h2>Edit row</h2>
+            <h2>Insert row</h2>
             <div
               *ngFor="let col of tableColumns; let i = index"
               class="form-group"
