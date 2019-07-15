@@ -76,7 +76,7 @@ export class AppComponent implements OnInit {
     const t = this;
 
     swal({
-      title: 'Please enter a grest url, and JWT token',
+      title: 'Please enter a postgrest url, and JWT token',
       html: `<input id="url-input" placeholder=" postgrest url" class="swal2-input">
             <input id="auth-input" placeholder="JWT token" class="swal2-input">`,
       showCancelButton: true,
