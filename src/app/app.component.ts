@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { PostgrestServiceService } from './services/postgrest-service.service';
-import { Properties } from './static/Properties';
+import { LOCAL_STORAGE_KEY } from './static/consts';
 import * as $ from 'jquery';
+import {DB, Table} from './static/interfaces';
 
 declare var swal: any;
 
@@ -14,14 +15,14 @@ declare var swal: any;
 export class AppComponent implements OnInit {
   title = 'app';
 
-  public databaseUrls: { url: string; auth: string }[] = [];
-  public currentUrl: { url: string; auth: string } = { url: '', auth: '' };
+  public databaseUrls: DB[] = [];
+  public currentUrl: DB = { url: '', auth: '' };
 
-  public newUrl: { url: string; auth: string } = { url: '', auth: '' };
+  public newUrl: DB = { url: '', auth: '' };
 
-  public tables: { name: string; pkey: string }[] = [];
+  public tables: Table[] = [];
 
-  public table: { name: string; pkey: string } = { name: '', pkey: '' };
+  public table: Table = { name: '', pkey: '' };
   public limit = 100;
   public offset = 0;
   public order = '';
@@ -44,7 +45,7 @@ export class AppComponent implements OnInit {
   constructor(private _postgrestService: PostgrestServiceService) {}
 
   ngOnInit() {
-    const result: string = localStorage.getItem('databaseUrls');
+    const result: string = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (result) {
       this.databaseUrls = JSON.parse(result);
       this.currentUrl = this.databaseUrls[0];
@@ -66,7 +67,7 @@ export class AppComponent implements OnInit {
     );
   }
 
-  public setUrl(urlIn: { url: string; auth: string }) {
+  public setUrl(urlIn: DB) {
     this.currentUrl = urlIn;
     this.refreshListOfTables();
   }
@@ -100,7 +101,7 @@ export class AppComponent implements OnInit {
     });
   }
 
-  public addUrl(url: { url: string; auth: string }): void {
+  public addUrl(url: DB): void {
     // var url = prompt("Please enter your grest url:", "http://grest.something.com");
     if (url) {
       if (this.databaseUrls.length === 0) {
@@ -124,7 +125,7 @@ export class AppComponent implements OnInit {
   }
 
   public persistUrls(): void {
-    localStorage.setItem('databaseUrls', JSON.stringify(this.databaseUrls));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.databaseUrls));
   }
 
   public deleteDB(): void {
@@ -149,7 +150,7 @@ export class AppComponent implements OnInit {
   }
 
   public deleteAllDB(): void {
-    localStorage.removeItem('databaseUrls');
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
     this.databaseUrls = [];
     this.tableRows = [];
     this.tableColumns = [];
@@ -172,7 +173,7 @@ export class AppComponent implements OnInit {
       .subscribe(results => this.setTables(results))
   }
 
-  public setTables(tables: { name: string; pkey: string }[]) {
+  public setTables(tables: Table[]) {
     this.tables = tables;
     this.setTable(tables[0]);
   }
@@ -181,7 +182,7 @@ export class AppComponent implements OnInit {
     this.setTable(this.table);
   }
 
-  public setTable(table: { name: string; pkey: string }) {
+  public setTable(table: Table) {
     this.busy = true;
     this.busyMessage = this.MESSAGE_LOADING_ROWS;
     this.offset = 0;
